@@ -2,6 +2,7 @@
 # coding: utf-8
 import pandas as pd
 from sqlalchemy import create_engine
+import click
 
 dtype = {
     "VendorID": "Int64",
@@ -29,20 +30,26 @@ parse_dates = [
 
 
 
+## Parameters
+@click.command()
+@click.option("--year", type=int, default=2021, show_default=True, help="Data year")
+@click.option("--month", type=int, default=1, show_default=True, help="Data month (1–12)")
+@click.option("--pg_user", default="root", show_default=True, help="Postgres user")
+@click.option("--pg_pass", default="root", show_default=True, help="Postgres password")
+@click.option("--pg_host", default="localhost", show_default=True, help="Postgres host")
+@click.option("--pg_db", default="ny_taxi", show_default=True, help="Postgres database")
+@click.option("--pg_port", type=int, default=5432, show_default=True, help="Postgres port")
+@click.option("--chunk_size", type=int, default=100_000, show_default=True, help="Chunk size for ingestion")
+@click.option(
+        "--target_table",
+        default="yellow_taxi_data",
+        show_default=True,
+        help="Target table name",
+    )
 
-def run():
-    ## Parameters
-    year = 2021
-    month = 1
-    pg_user = "root"
-    pg_pass = "root"
-    pg_host = "localhost"
-    pg_db = "ny_taxi"
-    pg_port = 5432
-    chunk_size = 100000
-    target_table = "yellow_taxi_data"
+def run(year,month,pg_user,pg_pass,pg_host,pg_db,pg_port,chunk_size,target_table):
+
     url_prefix = "https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_"
-
 
     # Create the Database Engine
     engine = create_engine(f'postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}')
