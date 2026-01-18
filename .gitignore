@@ -1,4 +1,4 @@
-
+*.parquet
 .DS_Store
 .idea
 *.tfstate
